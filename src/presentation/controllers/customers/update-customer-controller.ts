@@ -1,5 +1,5 @@
-import { ICreateCustomer } from "../../../domain/entities/customer";
-import { ICreateCustomerUseCase } from "../../../domain/use-cases/customers/create-customer-use-case";
+import { ICustomer } from "../../../domain/entities/customer";
+import { IUpdateCustomerUseCase } from "../../../domain/use-cases/customers/update-customer-use-case";
 import {
   internalServerError,
   missingParamError,
@@ -8,17 +8,21 @@ import {
 import { IController } from "../../types/controller";
 import { IHttpRequest, IHttpResponse } from "../../types/http";
 
-export class CreateCustomerController implements IController {
-  private createCustomer: ICreateCustomerUseCase;
+export class UpdateCustomerController implements IController {
+  private updateCustomer: IUpdateCustomerUseCase;
 
-  constructor(createCustomer: ICreateCustomerUseCase) {
-    this.createCustomer = createCustomer;
+  constructor(updateCustomer: IUpdateCustomerUseCase) {
+    this.updateCustomer = updateCustomer;
   }
 
   async handle(req: IHttpRequest): Promise<IHttpResponse> {
     try {
       const { document, email, name, phone } = req.body;
+      const { id } = req.pathParams;
+
       const requiredFields = ["document", "email", "name", "phone"];
+
+      if (!id) return missingParamError("id");
 
       for (const field of requiredFields) {
         if (req.body[field] === null || req.body[field] === undefined) {
@@ -26,8 +30,8 @@ export class CreateCustomerController implements IController {
         }
       }
 
-      const customer: ICreateCustomer = { document, email, name, phone };
-      const response = await this.createCustomer.create(customer);
+      const customer: ICustomer = { document, email, name, phone, id };
+      const response = await this.updateCustomer.update(customer);
 
       return ok(response);
     } catch (e) {
