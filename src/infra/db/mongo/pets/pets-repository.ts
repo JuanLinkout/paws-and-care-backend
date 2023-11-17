@@ -5,15 +5,16 @@ import { IUpdatePetRepository } from "../../../../domain/repositories/pets/updat
 import { ICreatePetRepository } from "../../../../domain/repositories/pets/create-pet-respository";
 import { ICreatePet, IPet } from "../../../../domain/entities/pet";
 import { IDeletePetRepository } from "../../../../domain/repositories/pets/delete-pet-respository";
+import { IGetPetsRepository } from "../../../../domain/repositories/pets/get-pets-respository";
 
 export class MongoPetRepository
   implements
-    ICreatePetRepository,
+    IGetPetsRepository,
     IDeletePetRepository,
     IUpdatePetRepository,
     ICreatePetRepository
 {
-  async get(): Promise<ICustomer[]> {
+  async get(): Promise<IPet[]> {
     const collection = MongoHelper.getCollection("pets");
     const customers = await collection.find({}).toArray();
     return MongoHelper.mapCollection(customers);
