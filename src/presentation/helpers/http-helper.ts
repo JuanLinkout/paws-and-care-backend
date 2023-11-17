@@ -1,3 +1,4 @@
+import { MissingParamError } from "../errors/missing-param-error";
 import { ServerError } from "../errors/server-error";
 import { IHttpResponse } from "../types/http";
 
@@ -11,7 +12,7 @@ export const internalServerError = (): IHttpResponse => ({
   statusCode: 500,
 });
 
-export const missingParamError = (id: string): IHttpResponse => ({
-  body: new Error(),
+export const missingParamError = (field: string): IHttpResponse => ({
+  body: new MissingParamError(field),
   statusCode: 500,
 });
